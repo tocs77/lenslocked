@@ -1,0 +1,11 @@
+services:
+  backend:
+    build: .
+    container_name: lenslocked
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+
