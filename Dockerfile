@@ -5,7 +5,5 @@ COPY go.mod go.sum ./
 
 RUN go mod download
 
-
-# COPY . .
 CMD [ "air", "-c", ".air.toml" ]
 # CMD [ "air" ]

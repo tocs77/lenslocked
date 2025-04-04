@@ -2,15 +2,30 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 )
 
 func homeHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprintf(w, "<h1>Welcome to my website!</h1>")
+	t, err := template.ParseFiles("templates/home.gohtml")
+	if err != nil {
+		fmt.Println("Error parsing template:", err)
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+	err = t.Execute(w, map[string]any{
+		"Date": time.Now().Format("2006-01-02 15:04:05"),
+	})
+	if err != nil {
+		fmt.Println("Error executing template:", err)
+		http.Error(w, "Page not found", http.StatusInternalServerError)
+		return
+	}
 }
 
 func contactHandler(w http.ResponseWriter, r *http.Request) {
