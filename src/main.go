@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"html/template"
+	"lenslocked/src/views"
 	"net/http"
 	"os"
 	"time"
@@ -10,37 +10,42 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func homeHandler(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	t, err := template.ParseFiles("templates/home.gohtml")
+func executeTemplate(w http.ResponseWriter, filepath string, data any) error {
+	t, err := views.Parse(filepath)
 	if err != nil {
-		fmt.Println("Error parsing template:", err)
 		http.Error(w, "Page not found", http.StatusNotFound)
-		return
+		return err
 	}
-	err = t.Execute(w, map[string]any{
+	return t.Execute(w, data)
+}
+
+func homeHandler(w http.ResponseWriter, _ *http.Request) {
+	err := executeTemplate(w, "templates/home.gohtml", map[string]any{
 		"Date": time.Now().Format("2006-01-02 15:04:05"),
 	})
 	if err != nil {
-		fmt.Println("Error executing template:", err)
-		http.Error(w, "Page not found", http.StatusInternalServerError)
+		http.Error(w, "Page not found", http.StatusNotFound)
 		return
 	}
 }
 
 func contactHandler(w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
-	fmt.Fprintf(w, "<h1>Contact %s</h1>", name)
+	err := executeTemplate(w, "templates/contact.gohtml", map[string]any{
+		"Name": name,
+	})
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
 }
 
 func faqHandler(w http.ResponseWriter, _ *http.Request) {
-	fmt.Fprintf(w, `
-	<h1>FAQ</h1>
-	<ul>
-		<li>The first rule of Fight Club is: You do not talk about Fight Club.</li>
-		<li>The second rule of Fight Club is: You do not talk about Fight Club.</li>
-	</ul>
-	`)
+	err := executeTemplate(w, "templates/faq.gohtml", nil)
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
 }
 
 func main() {
