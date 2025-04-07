@@ -14,8 +14,7 @@ type Template struct {
 func Parse(filepath string) (Template, error) {
 	parsedTemplate, err := template.ParseFiles(filepath)
 	if err != nil {
-		fmt.Println("Error parsing template:", err)
-		return Template{}, err
+		return Template{}, fmt.Errorf("error parsing template: %w", err)
 	}
 	return Template{htmlTemplate: parsedTemplate}, nil
 }
