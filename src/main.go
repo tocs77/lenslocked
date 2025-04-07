@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"lenslocked/src/controllers"
 	"lenslocked/src/views"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -52,18 +51,10 @@ func faqFunc(tpl views.Template, w http.ResponseWriter, _ *http.Request) {
 
 func main() {
 	r := chi.NewRouter()
-	homeHandler, err := controllers.StaticHandler("templates/home.gohtml", homeFunc)
-	if err != nil {
-		log.Fatal(err)
-	}
-	contactHandler, err := controllers.StaticHandler("templates/contact.gohtml", contactFunc)
-	if err != nil {
-		log.Fatal(err)
-	}
-	faqHandler, err := controllers.StaticHandler("templates/faq.gohtml", faqFunc)
-	if err != nil {
-		log.Fatal(err)
-	}
+	homeHandler := controllers.StaticHandler("templates/home.gohtml", homeFunc)
+	contactHandler := controllers.StaticHandler("templates/contact.gohtml", contactFunc)
+	faqHandler := controllers.StaticHandler("templates/faq.gohtml", faqFunc)
+
 	r.Get("/", homeHandler)
 	r.Get("/contact/{name}", contactHandler)
 	r.Get("/faq", faqHandler)
