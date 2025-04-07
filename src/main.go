@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"lenslocked/src/controllers"
 	"lenslocked/src/views"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -10,17 +12,17 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func executeTemplate(w http.ResponseWriter, filepath string, data any) error {
-	t, err := views.Parse(filepath)
+func executeTemplate(tpl views.Template, w http.ResponseWriter, data any) error {
+	err := tpl.Execute(w, data)
 	if err != nil {
 		http.Error(w, "Page not found", http.StatusNotFound)
 		return err
 	}
-	return t.Execute(w, data)
+	return nil
 }
 
-func homeHandler(w http.ResponseWriter, _ *http.Request) {
-	err := executeTemplate(w, "templates/home.gohtml", map[string]any{
+func homeFunc(tpl views.Template, w http.ResponseWriter, _ *http.Request) {
+	err := executeTemplate(tpl, w, map[string]any{
 		"Date": time.Now().Format("2006-01-02 15:04:05"),
 	})
 	if err != nil {
@@ -29,9 +31,9 @@ func homeHandler(w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
-func contactHandler(w http.ResponseWriter, r *http.Request) {
+func contactFunc(tpl views.Template, w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
-	err := executeTemplate(w, "templates/contact.gohtml", map[string]any{
+	err := executeTemplate(tpl, w, map[string]any{
 		"Name": name,
 	})
 	if err != nil {
@@ -40,8 +42,8 @@ func contactHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func faqHandler(w http.ResponseWriter, _ *http.Request) {
-	err := executeTemplate(w, "templates/faq.gohtml", nil)
+func faqFunc(tpl views.Template, w http.ResponseWriter, _ *http.Request) {
+	err := executeTemplate(tpl, w, nil)
 	if err != nil {
 		http.Error(w, "Page not found", http.StatusNotFound)
 		return
@@ -49,9 +51,19 @@ func faqHandler(w http.ResponseWriter, _ *http.Request) {
 }
 
 func main() {
-
 	r := chi.NewRouter()
-
+	homeHandler, err := controllers.StaticHandler("templates/home.gohtml", homeFunc)
+	if err != nil {
+		log.Fatal(err)
+	}
+	contactHandler, err := controllers.StaticHandler("templates/contact.gohtml", contactFunc)
+	if err != nil {
+		log.Fatal(err)
+	}
+	faqHandler, err := controllers.StaticHandler("templates/faq.gohtml", faqFunc)
+	if err != nil {
+		log.Fatal(err)
+	}
 	r.Get("/", homeHandler)
 	r.Get("/contact/{name}", contactHandler)
 	r.Get("/faq", faqHandler)
