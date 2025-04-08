@@ -51,9 +51,9 @@ func faqFunc(tpl views.Template, w http.ResponseWriter, _ *http.Request) {
 
 func main() {
 	r := chi.NewRouter()
-	homeHandler := controllers.StaticHandler("templates/home.gohtml", homeFunc)
-	contactHandler := controllers.StaticHandler("templates/contact.gohtml", contactFunc)
-	faqHandler := controllers.StaticHandler("templates/faq.gohtml", faqFunc)
+	homeHandler := controllers.StaticHandler("tmpls/home.gohtml", homeFunc)
+	contactHandler := controllers.StaticHandler("tmpls/contact.gohtml", contactFunc)
+	faqHandler := controllers.StaticHandler("tmpls/faq.gohtml", faqFunc)
 
 	r.Get("/", homeHandler)
 	r.Get("/contact/{name}", contactHandler)
