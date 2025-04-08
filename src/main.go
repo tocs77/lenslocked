@@ -60,9 +60,9 @@ func faqFunc(tpl views.Template, w http.ResponseWriter, _ *http.Request) {
 
 func main() {
 	r := chi.NewRouter()
-	homeHandler := controllers.StaticHandler("tmpls/home.gohtml", homeFunc)
-	contactHandler := controllers.StaticHandler("tmpls/contact.gohtml", contactFunc)
-	faqHandler := controllers.StaticHandler("tmpls/faq.gohtml", faqFunc)
+	homeHandler := controllers.StaticHandler(homeFunc, "tmpls/layout.gohtml", "tmpls/home.gohtml")
+	contactHandler := controllers.StaticHandler(contactFunc, "tmpls/layout.gohtml", "tmpls/contact.gohtml")
+	faqHandler := controllers.StaticHandler(faqFunc, "tmpls/layout.gohtml", "tmpls/faq.gohtml")
 
 	r.Get("/", homeHandler)
 	r.Get("/contact/{name}", contactHandler)
