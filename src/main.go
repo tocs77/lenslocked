@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"lenslocked/src/controllers"
 	"lenslocked/src/views"
 	"net/http"
@@ -42,7 +43,15 @@ func contactFunc(tpl views.Template, w http.ResponseWriter, r *http.Request) {
 }
 
 func faqFunc(tpl views.Template, w http.ResponseWriter, _ *http.Request) {
-	err := executeTemplate(tpl, w, nil)
+	questions := []struct {
+		Question string
+		Answer   template.HTML
+	}{
+		{Question: "What is the capital of France?", Answer: "Paris"},
+		{Question: "What is the capital of Germany?", Answer: "Berlin"},
+		{Question: "What adress is google site?", Answer: "<a href=\"https://google.com\">Google</a>"},
+	}
+	err := executeTemplate(tpl, w, questions)
 	if err != nil {
 		http.Error(w, "Page not found", http.StatusNotFound)
 		return

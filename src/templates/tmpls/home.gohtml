@@ -4,4 +4,10 @@
 
 <p> The date and time is {{ .Date }} </p>
 
+{{template "lorem-ipsum"}}
 
+
+{{define "lorem-ipsum"}}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna
+aliqua.
+{{end}}

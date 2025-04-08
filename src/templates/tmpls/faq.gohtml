@@ -1,5 +1,13 @@
 <h1>FAQ</h1>
 <ul>
-  <li>The first rule of Fight Club is: You do not talk about Fight Club.</li>
-  <li>The second rule of Fight Club is: You do not talk about Fight Club.</li>
+  {{range .}}
+  {{template "qa" .}}
+  {{end}}
 </ul>
+
+{{define "qa"}}
+<li>
+  <h3>{{.Question}}</h3>
+  <p>{{.Answer}}</p>
+</li>
+{{end}}
