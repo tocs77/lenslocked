@@ -2,13 +2,19 @@
 <html>
 
 <head>
-  <title>{{block "title" .}}Default Title{{end}}</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="/static/tailwind.min.css" rel="stylesheet">
 </head>
 
-{{block "content" .}}
-Default Content
-{{end}}
+<body class="px-6">
+  {{block "content" .}}
+  Default Content
+  {{end}}
 
-{{block "footer" .}}
-<p>Footer</p>
-{{end}}
+  {{block "footer" .}}
+  <p>Footer</p>
+  {{end}}
+</body>
+
+</html>

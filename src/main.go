@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"lenslocked/src/controllers"
+	"lenslocked/src/templates"
 	"lenslocked/src/views"
 	"net/http"
 	"os"
@@ -50,6 +51,7 @@ func faqFunc(tpl views.Template, w http.ResponseWriter, _ *http.Request) {
 		{Question: "What is the capital of France?", Answer: "Paris"},
 		{Question: "What is the capital of Germany?", Answer: "Berlin"},
 		{Question: "What adress is google site?", Answer: "<a href=\"https://google.com\">Google</a>"},
+		{Question: "What is the capital of Japan?", Answer: "Tokyo"},
 	}
 	err := executeTemplate(tpl, w, questions)
 	if err != nil {
@@ -70,6 +72,11 @@ func main() {
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
 	})
+
+	// Static files
+	fileServer := http.FileServer(http.FS(templates.FSstatic))
+	r.Handle("/static/*", fileServer)
+
 	port := os.Getenv("APP_PORT")
 	fmt.Println("Starting server on port " + port)
 	http.ListenAndServe(":"+port, r)
