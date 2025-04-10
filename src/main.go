@@ -60,15 +60,24 @@ func faqFunc(tpl views.Template, w http.ResponseWriter, _ *http.Request) {
 	}
 }
 
+func signupFunc(tpl views.Template, w http.ResponseWriter, _ *http.Request) {
+	err := executeTemplate(tpl, w, nil)
+	if err != nil {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
+}
 func main() {
 	r := chi.NewRouter()
 	homeHandler := controllers.StaticHandler(homeFunc, "tmpls/layout.gohtml", "tmpls/home.gohtml")
 	contactHandler := controllers.StaticHandler(contactFunc, "tmpls/layout.gohtml", "tmpls/contact.gohtml")
 	faqHandler := controllers.StaticHandler(faqFunc, "tmpls/layout.gohtml", "tmpls/faq.gohtml")
+	signupHandler := controllers.StaticHandler(signupFunc, "tmpls/layout.gohtml", "tmpls/signup.gohtml")
 
 	r.Get("/", homeHandler)
 	r.Get("/contact/{name}", contactHandler)
 	r.Get("/faq", faqHandler)
+	r.Get("/signup", signupHandler)
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
 	})

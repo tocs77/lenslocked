@@ -7,7 +7,7 @@
   <link href="/static/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="min-h-full bg-gray-100">
   <header class="bg-gradient-to-r from-blue-800 to-indigo-800">
     <nav class="px-6 py-4 flex items-center text-white">
       <div class="pr-8">
@@ -43,7 +43,7 @@
       </div>
       <div>
         <a class="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded mr-4" href="#"> Login </a>
-        <a class="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded" href="#"> Register </a>
+        <a class="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded" href="/signup"> Register </a>
       </div>
     </nav>
   </header>
@@ -54,7 +54,13 @@
   </main>
 
   {{block "footer" .}}
-  <p>Footer</p>
+  <footer class="bg-gray-800 text-white py-4 " style="position: fixed; bottom: 0; width: 100%;">
+    <div class="container mx-auto px-4">
+      <p class="text-center">
+        &copy; 2025 Fancy Bears. All rights reserved.
+      </p>
+    </div>
+  </footer>
   {{end}}
 </body>
 
