@@ -13,17 +13,8 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func executeTemplate(tpl views.Template, w http.ResponseWriter, data any) error {
-	err := tpl.Execute(w, data)
-	if err != nil {
-		http.Error(w, "Page not found", http.StatusNotFound)
-		return err
-	}
-	return nil
-}
-
 func homeFunc(tpl views.Template, w http.ResponseWriter, _ *http.Request) {
-	err := executeTemplate(tpl, w, map[string]any{
+	err := controllers.ExecuteTemplate(tpl, w, map[string]any{
 		"Date": time.Now().Format("2006-01-02 15:04:05"),
 	})
 	if err != nil {
@@ -34,7 +25,7 @@ func homeFunc(tpl views.Template, w http.ResponseWriter, _ *http.Request) {
 
 func contactFunc(tpl views.Template, w http.ResponseWriter, r *http.Request) {
 	name := chi.URLParam(r, "name")
-	err := executeTemplate(tpl, w, map[string]any{
+	err := controllers.ExecuteTemplate(tpl, w, map[string]any{
 		"Name": name,
 	})
 	if err != nil {
@@ -53,7 +44,7 @@ func faqFunc(tpl views.Template, w http.ResponseWriter, _ *http.Request) {
 		{Question: "What adress is google site?", Answer: "<a href=\"https://google.com\">Google</a>"},
 		{Question: "What is the capital of Japan?", Answer: "Tokyo"},
 	}
-	err := executeTemplate(tpl, w, questions)
+	err := controllers.ExecuteTemplate(tpl, w, questions)
 	if err != nil {
 		http.Error(w, "Page not found", http.StatusNotFound)
 		return
@@ -61,7 +52,7 @@ func faqFunc(tpl views.Template, w http.ResponseWriter, _ *http.Request) {
 }
 
 func signupFunc(tpl views.Template, w http.ResponseWriter, _ *http.Request) {
-	err := executeTemplate(tpl, w, nil)
+	err := controllers.ExecuteTemplate(tpl, w, nil)
 	if err != nil {
 		http.Error(w, "Page not found", http.StatusNotFound)
 		return
@@ -69,15 +60,17 @@ func signupFunc(tpl views.Template, w http.ResponseWriter, _ *http.Request) {
 }
 func main() {
 	r := chi.NewRouter()
-	homeHandler := controllers.StaticHandler(homeFunc, "tmpls/layout.gohtml", "tmpls/home.gohtml")
-	contactHandler := controllers.StaticHandler(contactFunc, "tmpls/layout.gohtml", "tmpls/contact.gohtml")
-	faqHandler := controllers.StaticHandler(faqFunc, "tmpls/layout.gohtml", "tmpls/faq.gohtml")
-	signupHandler := controllers.StaticHandler(signupFunc, "tmpls/layout.gohtml", "tmpls/signup.gohtml")
+	homeHandler := controllers.MakeHandler(homeFunc, "tmpls/layout.gohtml", "tmpls/home.gohtml")
+	contactHandler := controllers.MakeHandler(contactFunc, "tmpls/layout.gohtml", "tmpls/contact.gohtml")
+	faqHandler := controllers.MakeHandler(faqFunc, "tmpls/layout.gohtml", "tmpls/faq.gohtml")
+
+	users := controllers.Users{}
+	users.SetupRoutes()
 
 	r.Get("/", homeHandler)
 	r.Get("/contact/{name}", contactHandler)
 	r.Get("/faq", faqHandler)
-	r.Get("/signup", signupHandler)
+	r.Get("/signup", users.Controllers.New)
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page not found", http.StatusNotFound)
 	})
