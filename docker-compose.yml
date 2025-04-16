@@ -6,6 +6,29 @@ services:
       - "${APP_PORT}:${APP_PORT}"
     volumes:
       - ./:/app
+    depends_on:
+      - db
     env_file:
       - .env
+  db:
+    image: postgres:latest
+    container_name: lenslocked-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}      
+      POSTGRES_USER: ${DB_USER}      
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - lenslocked_data:/var/lib/postgresql/data 
+  pgadmin:
+    image: dpage/pgadmin4:latest  
+    container_name: lenslocked-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com  
+      PGADMIN_DEFAULT_PASSWORD: admin          
+    ports:
+      - "3008:80" 
+    depends_on:
+      - db 
+volumes:
+  lenslocked_data:  # Volume for PostgreSQL data persistence
 

@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"lenslocked/src/controllers"
+	"lenslocked/src/db"
 	"lenslocked/src/templates"
+	"log"
 	"net/http"
 	"os"
 
@@ -11,6 +13,15 @@ import (
 )
 
 func main() {
+	baseDb, err := db.Connect()
+	if err != nil {
+		log.Fatal(err)
+	}
+	db.PrepareDb(baseDb)
+	db.FillDb(baseDb)
+	fmt.Println("Connected to database")
+	defer baseDb.Close()
+
 	r := chi.NewRouter()
 
 	users := controllers.Users{}
