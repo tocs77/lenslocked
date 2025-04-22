@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"lenslocked/src/controllers"
 	"lenslocked/src/db"
+	"lenslocked/src/models"
 	"lenslocked/src/templates"
 	"log"
 	"net/http"
@@ -18,7 +19,9 @@ func main() {
 		log.Fatal(err)
 	}
 	db.PrepareDb(baseDb)
-	db.FillDb(baseDb)
+	us := models.UserService{DB: baseDb}
+	db.FillUsers(&us)
+	//db.FillDb(baseDb)
 	fmt.Println("Connected to database")
 	defer baseDb.Close()
 

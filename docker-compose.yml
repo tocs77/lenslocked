@@ -24,7 +24,9 @@ services:
     container_name: lenslocked-pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com  
-      PGADMIN_DEFAULT_PASSWORD: admin          
+      PGADMIN_DEFAULT_PASSWORD: admin
+      GUNICORN_ACCESS_LOGFILE: '/dev/null'
+      GUNICORN_ERROR_LOGFILE: '/dev/null'
     ports:
       - "3008:80" 
     depends_on:
