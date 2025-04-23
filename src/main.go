@@ -19,18 +19,21 @@ func main() {
 		log.Fatal(err)
 	}
 	db.PrepareDb(baseDb)
-	us := models.UserService{DB: baseDb}
-	db.FillUsers(&us)
+	defer baseDb.Close()
+
+	userService := models.UserService{DB: baseDb}
+	//db.FillUsers(&userService)
 	//db.FillDb(baseDb)
 	fmt.Println("Connected to database")
-	defer baseDb.Close()
 
 	r := chi.NewRouter()
 
-	users := controllers.Users{}
+	users := controllers.Users{UserService: &userService}
 	users.SetupRoutes()
 	r.Get("/signup", users.Controllers.New)
 	r.Post("/users", users.Controllers.Create)
+	r.Get("/signin", users.Controllers.SignIn)
+	r.Post("/auth", users.Controllers.Auth)
 
 	static := controllers.Static{}
 	static.SetupRoutes()
